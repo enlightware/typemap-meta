@@ -1,5 +1,16 @@
 # typemap-meta
 
+[![Crates.io][crates-badge]][crates-url]
+[![Docs.rs][docs-badge]][docs-url]
+[![Build Status][ci-badge]][ci-url]
+
+[crates-badge]: https://img.shields.io/crates/v/typemap-meta
+[crates-url]: https://crates.io/crates/typemap-meta
+[docs-badge]: https://img.shields.io/docsrs/typemap-meta
+[docs-url]: https://docs.rs/typemap-meta
+[ci-badge]: https://img.shields.io/github/workflow/status/enlightware/typemap-meta/CI
+[ci-url]: https://github.com/enlightware/typemap-meta/actions
+
 An [Enlightware® software](https://enlightware.ch).
 
 ## Overview
