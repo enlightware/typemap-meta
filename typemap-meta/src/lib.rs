@@ -56,9 +56,26 @@ mod tests {
         assert_eq!(*get!(&t, i32), 1);
         assert_eq!(*get!(&t, f32), 2.0);
     }
+    #[test]
+    fn impl_get_ref() {
+        struct Test<'a>(&'a i32, &'a f32);
+        impl<'a> Get<&'a i32> for Test<'a> {
+            fn get(&self) -> &&'a i32 {
+                &self.0
+            }
+        }
+        impl<'a> Get<&'a f32> for Test<'a> {
+            fn get(&self) -> &&'a f32 {
+                &self.1
+            }
+        }
+        let t = Test(&1, &2.0);
+        assert_eq!(**get!(&t, &i32), 1);
+        assert_eq!(**get!(&t, &f32), 2.0);
+    }
 
     #[test]
-    fn derive_ok() {
+    fn derive_scalar() {
         extern crate std;
         use std::marker::PhantomData;
         #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -72,5 +89,34 @@ mod tests {
         assert_eq!(*get!(&t, i32), 1);
         assert_eq!(*get!(&t, f32), 2.0);
         assert_eq!(*get!(&t, A<u32>), a);
+    }
+
+    #[test]
+    fn derive_struct() {
+        #[derive(Debug, PartialEq)]
+        struct A {}
+        #[derive(Debug, PartialEq)]
+        struct B {}
+        #[derive(crate::Typemap)]
+        struct Test(A, B);
+        let t = Test(A{}, B{});
+        assert_eq!(*get!(&t, A), A{});
+    }
+
+    #[test]
+    fn derive_ref() {
+        #[derive(Debug, PartialEq)]
+        struct A {}
+        #[derive(Debug, PartialEq)]
+        struct B {}
+        #[derive(crate::Typemap)]
+        struct Test<'l>(&'l A, &'l B, i32, f32);
+        let a = A{};
+        let b = B{};
+        let t = Test(&a, &b, 1, 2.0);
+        assert_eq!(**get!(&t, &A), A{});
+        assert_eq!(**get!(&t, &B), B{});
+        assert_eq!(*get!(&t, i32), 1);
+        assert_eq!(*get!(&t, f32), 2.0);
     }
 }

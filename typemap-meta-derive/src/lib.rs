@@ -29,8 +29,9 @@ fn impl_typemap_macro(ast: &syn::DeriveInput) -> TokenStream {
     let types = tuple_fields.unnamed.iter().map(|e| e.ty.to_token_stream());
     let indices = (0..types.len()).map(|i| syn::Index::from(i));
     let name = &ast.ident;
+    let generics = &ast.generics;
     let gen = quote! {
-        #(impl Get<#types> for #name {
+        #(impl #generics Get<#types> for #name #generics {
             fn get(&self) -> &#types {
                 &self.#indices
             }
