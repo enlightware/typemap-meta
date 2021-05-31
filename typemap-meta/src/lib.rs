@@ -198,8 +198,8 @@ mod tests {
         // instance and asserts
         #[derive(crate::Typemap)]
         struct Test(&'static dyn TA, &'static dyn TB);
-        let a: &'static dyn TA = & A { v: 1 };
-        let b: &'static dyn TB = & B { v: 2.0 };
+        let a: &'static dyn TA = &A { v: 1 };
+        let b: &'static dyn TB = &B { v: 2.0 };
         let t = Test(a, b);
         assert_eq!(get!(t, &'static dyn TA).value_a(), 1);
         assert_eq!(get!(t, &'static dyn TB).value_b(), 2.0);
