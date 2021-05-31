@@ -128,7 +128,7 @@ mod tests {
     }
 
     #[test]
-    fn derive_trait() {
+    fn derive_box_trait() {
         extern crate std;
         use std::{boxed::Box, fmt::Debug};
         // trait TA and struct A
@@ -163,5 +163,45 @@ mod tests {
         let t = Test(Box::new(A { v: 1 }), Box::new(B { v: 2.0 }));
         assert_eq!(get!(t, Box<dyn TA>).value_a(), 1);
         assert_eq!(get!(t, Box<dyn TB>).value_b(), 2.0);
+    }
+
+    #[test]
+    fn derive_static_trait() {
+        extern crate std;
+        use std::fmt::Debug;
+        // trait TA and struct A
+        trait TA {
+            fn value_a(&self) -> i32;
+        }
+        #[derive(Debug, PartialEq)]
+        struct A {
+            v: i32,
+        }
+        impl TA for A {
+            fn value_a(&self) -> i32 {
+                self.v
+            }
+        }
+        // trait TB and struct B
+        trait TB {
+            fn value_b(&self) -> f32;
+        }
+        #[derive(Debug, PartialEq)]
+        struct B {
+            v: f32,
+        }
+        impl TB for B {
+            fn value_b(&self) -> f32 {
+                self.v
+            }
+        }
+        // instance and asserts
+        #[derive(crate::Typemap)]
+        struct Test(&'static dyn TA, &'static dyn TB);
+        let a: &'static dyn TA = & A { v: 1 };
+        let b: &'static dyn TB = & B { v: 2.0 };
+        let t = Test(a, b);
+        assert_eq!(get!(t, &'static dyn TA).value_a(), 1);
+        assert_eq!(get!(t, &'static dyn TB).value_b(), 2.0);
     }
 }
