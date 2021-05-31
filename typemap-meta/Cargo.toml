@@ -1,0 +1,17 @@
+[package]
+name = "typemap-meta"
+version = "0.1.0"
+authors = ["Stéphane Magnenat <stephane.magnenat@enlightware.ch>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+description = "A simple compile-time macro to create type-to-valup maps"
+repository = "https://github.com/enlightware/typemap-meta"
+homepage = "https://github.com/enlightware/typemap-meta"
+readme = "README.md"
+keywords = ["typemap", "meta programming", "type to value map"]
+categories = ["memory-management", "rust-patterns", "no-std"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+typemap-meta-derive = { version = "0.1", path = "../typemap-meta-derive" }
