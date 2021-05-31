@@ -36,8 +36,8 @@ Then, you can create a tuple struct containing disjoint heterogeneous types, and
 #[derive(Typemap)]
 struct Test(i32, f32);
 let t = Test(1, 2.0);
-assert_eq!(*get!(&t, i32), 1);
-assert_eq!(*get!(&t, f32), 2.0);
+assert_eq!(*get!(t, i32), 1);
+assert_eq!(*get!(t, f32), 2.0);
 ```
 
 ## Crate structure
