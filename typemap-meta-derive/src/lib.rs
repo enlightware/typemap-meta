@@ -1,7 +1,7 @@
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
-use quote::{ToTokens, quote};
+use quote::{quote, ToTokens};
 use syn::{self, Data, Fields};
 
 /// Add static type-to-value getters to a tuple struct containing disjoint heterogeneous types
@@ -27,7 +27,7 @@ fn impl_typemap_macro(ast: &syn::DeriveInput) -> TokenStream {
         panic!("Typemap only applies to tuple struct, but used on a non-tuple struct!")
     };
     let types = tuple_fields.unnamed.iter().map(|e| e.ty.to_token_stream());
-    let indices = (0..types.len()).map(|i| syn::Index::from(i));
+    let indices = (0..types.len()).map(syn::Index::from);
     let name = &ast.ident;
     let generics = &ast.generics;
     let gen = quote! {

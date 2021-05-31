@@ -31,15 +31,15 @@ pub trait Get<T> {
 ///
 /// Passing a value is fine, as [`get`] will add a reference to `$t` before calling [`Get`].
 #[macro_export]
-macro_rules! get{
+macro_rules! get {
     ($s:expr, $t:ty) => {
         $crate::Get::<$t>::get(&$s)
-    }
+    };
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{Get, get};
+    use crate::{get, Get};
 
     // without using the generation macro
 
@@ -87,7 +87,7 @@ mod tests {
         use std::marker::PhantomData;
         #[derive(Debug, PartialEq, Eq, Clone, Copy)]
         struct A<T> {
-            _f: PhantomData<T>
+            _f: PhantomData<T>,
         }
         #[derive(crate::Typemap)]
         struct Test(i32, f32, A<u32>);
@@ -106,8 +106,8 @@ mod tests {
         struct B {}
         #[derive(crate::Typemap)]
         struct Test(A, B);
-        let t = Test(A{}, B{});
-        assert_eq!(*get!(t, A), A{});
+        let t = Test(A {}, B {});
+        assert_eq!(*get!(t, A), A {});
     }
 
     #[test]
@@ -118,11 +118,11 @@ mod tests {
         struct B {}
         #[derive(crate::Typemap)]
         struct Test<'l>(&'l A, &'l B, i32, f32);
-        let a = A{};
-        let b = B{};
+        let a = A {};
+        let b = B {};
         let t = Test(&a, &b, 1, 2.0);
-        assert_eq!(**get!(t, &A), A{});
-        assert_eq!(**get!(t, &B), B{});
+        assert_eq!(**get!(t, &A), A {});
+        assert_eq!(**get!(t, &B), B {});
         assert_eq!(*get!(t, i32), 1);
         assert_eq!(*get!(t, f32), 2.0);
     }
@@ -137,10 +137,12 @@ mod tests {
         }
         #[derive(Debug, PartialEq)]
         struct A {
-            v: i32
+            v: i32,
         }
         impl TA for A {
-            fn value_a(&self) -> i32 { self.v }
+            fn value_a(&self) -> i32 {
+                self.v
+            }
         }
         // trait TB and struct B
         trait TB {
@@ -148,15 +150,17 @@ mod tests {
         }
         #[derive(Debug, PartialEq)]
         struct B {
-            v: f32
+            v: f32,
         }
         impl TB for B {
-            fn value_b(&self) -> f32 { self.v }
+            fn value_b(&self) -> f32 {
+                self.v
+            }
         }
         // instance and asserts
         #[derive(crate::Typemap)]
         struct Test(Box<dyn TA>, Box<dyn TB>);
-        let t = Test(Box::new(A{ v: 1 }), Box::new(B{ v: 2.0 }));
+        let t = Test(Box::new(A { v: 1 }), Box::new(B { v: 2.0 }));
         assert_eq!(get!(t, Box<dyn TA>).value_a(), 1);
         assert_eq!(get!(t, Box<dyn TB>).value_b(), 2.0);
     }
