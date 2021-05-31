@@ -16,8 +16,8 @@
 //! struct Test(i32, f32);
 //!
 //! let t = Test(1, 2.0);
-//! assert_eq!(*get!(&t, i32), 1);
-//! assert_eq!(*get!(&t, f32), 2.0);
+//! assert_eq!(*get!(t, i32), 1);
+//! assert_eq!(*get!(t, f32), 2.0);
 //! ```
 
 pub use typemap_meta_derive::*;
@@ -28,10 +28,12 @@ pub trait Get<T> {
 }
 
 /// Convenience macro to get a specific type `$t` from a tuple struct `$s` containing disjoint heterogeneous types
+///
+/// Passing a value is fine, as [`get`] will add a reference to `$t` before calling [`Get`].
 #[macro_export]
 macro_rules! get{
     ($s:expr, $t:ty) => {
-        $crate::Get::<$t>::get($s)
+        $crate::Get::<$t>::get(&$s)
     }
 }
 
@@ -53,8 +55,8 @@ mod tests {
             }
         }
         let t = Test(1, 2.0);
-        assert_eq!(*get!(&t, i32), 1);
-        assert_eq!(*get!(&t, f32), 2.0);
+        assert_eq!(*get!(t, i32), 1);
+        assert_eq!(*get!(t, f32), 2.0);
     }
     #[test]
     fn impl_get_ref() {
@@ -70,8 +72,8 @@ mod tests {
             }
         }
         let t = Test(&1, &2.0);
-        assert_eq!(**get!(&t, &i32), 1);
-        assert_eq!(**get!(&t, &f32), 2.0);
+        assert_eq!(**get!(t, &i32), 1);
+        assert_eq!(**get!(t, &f32), 2.0);
     }
 
     #[test]
@@ -86,9 +88,9 @@ mod tests {
         struct Test(i32, f32, A<u32>);
         let a = A { _f: PhantomData };
         let t = Test(1, 2.0, a);
-        assert_eq!(*get!(&t, i32), 1);
-        assert_eq!(*get!(&t, f32), 2.0);
-        assert_eq!(*get!(&t, A<u32>), a);
+        assert_eq!(*get!(t, i32), 1);
+        assert_eq!(*get!(t, f32), 2.0);
+        assert_eq!(*get!(t, A<u32>), a);
     }
 
     #[test]
@@ -100,7 +102,7 @@ mod tests {
         #[derive(crate::Typemap)]
         struct Test(A, B);
         let t = Test(A{}, B{});
-        assert_eq!(*get!(&t, A), A{});
+        assert_eq!(*get!(t, A), A{});
     }
 
     #[test]
@@ -114,9 +116,9 @@ mod tests {
         let a = A{};
         let b = B{};
         let t = Test(&a, &b, 1, 2.0);
-        assert_eq!(**get!(&t, &A), A{});
-        assert_eq!(**get!(&t, &B), B{});
-        assert_eq!(*get!(&t, i32), 1);
-        assert_eq!(*get!(&t, f32), 2.0);
+        assert_eq!(**get!(t, &A), A{});
+        assert_eq!(**get!(t, &B), B{});
+        assert_eq!(*get!(t, i32), 1);
+        assert_eq!(*get!(t, f32), 2.0);
     }
 }
