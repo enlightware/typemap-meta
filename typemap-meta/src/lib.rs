@@ -41,6 +41,8 @@ macro_rules! get{
 mod tests {
     use crate::{Get, get};
 
+    // without using the generation macro
+
     #[test]
     fn impl_get() {
         struct Test(i32, f32);
@@ -58,6 +60,7 @@ mod tests {
         assert_eq!(*get!(t, i32), 1);
         assert_eq!(*get!(t, f32), 2.0);
     }
+
     #[test]
     fn impl_get_ref() {
         struct Test<'a>(&'a i32, &'a f32);
@@ -75,6 +78,8 @@ mod tests {
         assert_eq!(**get!(t, &i32), 1);
         assert_eq!(**get!(t, &f32), 2.0);
     }
+
+    // with using the generation macro
 
     #[test]
     fn derive_scalar() {
@@ -120,5 +125,39 @@ mod tests {
         assert_eq!(**get!(t, &B), B{});
         assert_eq!(*get!(t, i32), 1);
         assert_eq!(*get!(t, f32), 2.0);
+    }
+
+    #[test]
+    fn derive_trait() {
+        extern crate std;
+        use std::{boxed::Box, fmt::Debug};
+        // trait TA and struct A
+        trait TA {
+            fn value_a(&self) -> i32;
+        }
+        #[derive(Debug, PartialEq)]
+        struct A {
+            v: i32
+        }
+        impl TA for A {
+            fn value_a(&self) -> i32 { self.v }
+        }
+        // trait TB and struct B
+        trait TB {
+            fn value_b(&self) -> f32;
+        }
+        #[derive(Debug, PartialEq)]
+        struct B {
+            v: f32
+        }
+        impl TB for B {
+            fn value_b(&self) -> f32 { self.v }
+        }
+        // instance and asserts
+        #[derive(crate::Typemap)]
+        struct Test(Box<dyn TA>, Box<dyn TB>);
+        let t = Test(Box::new(A{ v: 1 }), Box::new(B{ v: 2.0 }));
+        assert_eq!(get!(t, Box<dyn TA>).value_a(), 1);
+        assert_eq!(get!(t, Box<dyn TB>).value_b(), 2.0);
     }
 }
