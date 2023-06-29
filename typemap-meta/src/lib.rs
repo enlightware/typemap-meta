@@ -19,6 +19,25 @@
 //! assert_eq!(*get!(t, i32), 1);
 //! assert_eq!(*get!(t, f32), 2.0);
 //! ```
+//! 
+//! To get mutable references, add the `#[typemap_mut]` attribute on your struct, and
+//! use `get_mut!` instead of `get!`:
+//! ```
+//! # use typemap_meta::*;
+//! #[derive(Typemap)]
+//! #[typemap_mut]
+//! struct Test(i32, f32);
+//!
+//! let mut t = Test(1, 2.0);
+//! assert_eq!(*get!(t, i32), 1);
+//! assert_eq!(*get!(t, f32), 2.0);
+//! 
+//! *get_mut!(t, i32) = 3;
+//! *get_mut!(t, f32) = 4.0;
+//! 
+//! assert_eq!(*get!(t, i32), 3);
+//! assert_eq!(*get!(t, f32), 4.0);
+//! ```
 
 pub use typemap_meta_derive::*;
 
