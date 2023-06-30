@@ -19,7 +19,7 @@
 //! assert_eq!(*get!(t, i32), 1);
 //! assert_eq!(*get!(t, f32), 2.0);
 //! ```
-//! 
+//!
 //! To get mutable references, add the `#[typemap_mut]` attribute on your struct, and
 //! use `get_mut!` instead of `get!`:
 //! ```
@@ -31,10 +31,10 @@
 //! let mut t = Test(1, 2.0);
 //! assert_eq!(*get!(t, i32), 1);
 //! assert_eq!(*get!(t, f32), 2.0);
-//! 
+//!
 //! *get_mut!(t, i32) = 3;
 //! *get_mut!(t, f32) = 4.0;
-//! 
+//!
 //! assert_eq!(*get!(t, i32), 3);
 //! assert_eq!(*get!(t, f32), 4.0);
 //! ```
@@ -246,9 +246,11 @@ mod tests {
     #[test]
     fn derive_struct_mut() {
         #[derive(Debug, PartialEq)]
-        struct A { x: u32 }
+        struct A {
+            x: u32,
+        }
         #[derive(Debug, PartialEq)]
-        struct B { }
+        struct B {}
         #[derive(crate::Typemap)]
         #[typemap_mut]
         struct Test(A, B);
@@ -281,7 +283,9 @@ mod tests {
     #[test]
     fn derive_ref_mut() {
         #[derive(Debug, PartialEq)]
-        struct A { x: u32 }
+        struct A {
+            x: u32,
+        }
         #[derive(Debug, PartialEq)]
         struct B {}
         #[derive(crate::Typemap)]
