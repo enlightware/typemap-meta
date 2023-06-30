@@ -27,7 +27,7 @@ To use this crate, first add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-typemap-meta = "0.1"
+typemap-meta = "0.2"
 ```
 
 Then, you can create a tuple struct containing disjoint heterogeneous types, and derive `Typemap`, and then use the `get!` macro (a syntactic sugar around `Typemap::Get`):
@@ -38,6 +38,19 @@ struct Test(i32, f32);
 let t = Test(1, 2.0);
 assert_eq!(*get!(t, i32), 1);
 assert_eq!(*get!(t, f32), 2.0);
+```
+
+A mutable version is also available:
+
+```rust
+#[derive(Typemap)]
+#[typemap_mut]
+struct Test(i32, f32);
+let mut t = Test(1, 2.0);
+*get_mut!(t, i32) = 3;
+*get_mut!(t, f32) = 4.0;
+assert_eq!(*get!(t, i32), 3);
+assert_eq!(*get!(t, f32), 4.0);
 ```
 
 ## Crate structure
